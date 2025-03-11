@@ -1,9 +1,9 @@
 resource "google_service_account" "default" {
-  account_id   = "118205278588847386339"
+  account_id   = "service-account-final-project"
   display_name = "service-account-final-project"
 }
 
-resource "google_compute_instance_template" "default" {
+resource "google_compute_instance_template" "appserver" {
   name        = "appserver-template"
   description = "This template is used to create app server instances."
 
@@ -14,7 +14,7 @@ resource "google_compute_instance_template" "default" {
   }
 
   instance_description = "description assigned to instances"
-  machine_type         = "e2-medium"
+  machine_type         = var.machine_type
   can_ip_forward       = false
 
   scheduling {
@@ -49,7 +49,7 @@ resource "google_compute_instance_template" "default" {
 
   service_account {
     # Google recommends custom service accounts that have cloud-platform scope and permissions granted via IAM Roles.
-    email  = service-account-final-project@final-project-453412.iam.gserviceaccount.com
+    email  = var.service-account
     scopes = ["cloud-platform"]
   }
 }
@@ -63,13 +63,13 @@ resource "google_compute_disk" "foobar" {
   name  = "existing-disk"
   image = data.google_compute_image.my_image.self_link
   size  = 10
-  type  = "pd-ssd"
-  zone  = "us-central1-a"
+  type  = "pd-standard"
+  zone  = var.zone
 }
 
 resource "google_compute_resource_policy" "daily_backup" {
   name   = "every-day-4am"
-  region = "us-central1"
+  region = var.region
   snapshot_schedule_policy {
     schedule {
       daily_schedule {

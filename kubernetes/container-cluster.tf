@@ -1,6 +1,6 @@
 resource "google_container_cluster" "primary" {
   name     = "my-gke-cluster"
-  location = "var.region"
+  location = var.region
 
   # We can't create a cluster with no node pool defined, but we want to only use
   # separately managed node pools. So we create the smallest possible default
@@ -16,11 +16,11 @@ resource "google_container_node_pool" "primary_nodes" {
 
   node_config {
     preemptible  = true
-    machine_type = "var.machine_type"
+    machine_type = var.machine_type
 
     # Service account for nodes
-    service_account = "var.service-account"
-
+    service_account = var.service-account
+       
     # Tags and labels
     tags = ["gke-node", "dev"]
     labels = {
